@@ -11,3 +11,4 @@ src/utils/__pycache__/
 credit_card_extractor.egg-info/
 
 .env
+weights/
