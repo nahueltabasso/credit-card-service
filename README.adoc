@@ -105,6 +105,12 @@ To execute this app need to declarate an environment variable to consume an exte
 [source,bash]
 BINLIST_API_URL=https://lookup.binlist.net
 
+Also you need to create a weights directory and download the GroundingDINO Model weights:
+[source,bash]
+mkdir weights
+cd weights
+wget -q https://github.com/IDEA-Research/GroundingDINO/releases/download/v0.1.0-alpha/groundingdino_swint_ogc.pth
+
 [[docker]]
 === 🐳 Using Docker
 1. Ensure you have `Docker` and `docker-compose` installed on your system
