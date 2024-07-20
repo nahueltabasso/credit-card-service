@@ -1,0 +1,22 @@
+version: '3.8'
+services:
+  poc_credit_card_service:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      - "7860:7860"
+    volumes:
+      - ./:/opt/project/credit-card-service
+    # runtime: nvidia
+
+  api_credit_card_service:
+    build:
+      context: ./
+      dockerfile: Dockerfile_api
+    ports:  
+      - "8000:8000"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./:/opt/project/credit-card-service
+    # runtime: nvidia
