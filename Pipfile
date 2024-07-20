@@ -1,0 +1,22 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+colorama = "*"
+torch = "==2.3.1"
+torchvision = "==0.18.1"
+opencv-python = "==4.7.0.72"
+numpy = "==1.26.4"
+easyocr = "==1.7.1"
+fastapi = "==0.111.0"
+python-dotenv = "*"
+gradio = "==3.43.2"
+
+[dev-packages]
+ipykernel = "*"
+
+[requires]
+python_version = "3.9"
+python_full_version = "3.9.6"

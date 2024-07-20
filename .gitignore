@@ -1,0 +1,13 @@
+data/input_data/
+data/ouput_data/
+
+src/__pycache__/
+src/config/__pycache__/
+src/core/__pycache__/
+src/demo/.ipynb_checkpoints
+src/models/__pycache__/
+src/utils/__pycache__/
+
+credit_card_extractor.egg-info/
+
+.env

@@ -1,0 +1,226 @@
+= 💳 Credit Card Detector & Data Extrator
+
+
+== 📋 INDEX
+. <<description,Description>>
+.. <<features,Features>>
+.. <<notes,Notes>>
+.. <<example,Example>>
+. <<technologies,Technologies>>
+. <<projectstructure,Project Structure>>
+. <<gettingstarted,Getting Started>>
+.. <<requirements,System Requirements>>
+.. <<docker,Using Docker>>
+.. <<virtualenv,Using Python Virtual Environment (pipenv)>>
+.. <<api,Rest API Service>>
+... <<apitutorial,Using the Python API>>
+. <<contributing,Contributing>>
+. <<acknowledgements,Acknowledgements>>
+. <<license,License>>
+. <<contact,Contact>>
+
+
+
+[[description]]
+== 📘 Description
+This project called `Credit Card Detector & Data Extractor` is a service designed to detect **credits cards** in images through GroundingDINO, which is an advanced **Artificial Intelligence** technique that combines the object detections with natural language comprenhsion, and data extraction by OCR technique to identify card numbers, expiration dates and cardholder names.
+
+[[features]]
+=== ☑️ Features:
+* Credit card detection in images
+* Extraction of card number, expiration date and cardholder name
+* Support for multiple credit card types
+
+[[notes]]
+=== 📝 Notes:
+This projects was developed with personal and academics goals, not for commercial purposes.
+However, it is important to mention that the credit card images with I worked in this project for notebooks and demos were downloaded from Internet. So this credit cards do not belon to anybody and aren't real cards, therefore I am not using or sharing sensitive information of any person.
+
+[[example]]
+=== ✅ Example
+[horizontal]
+++++
+<div style="display: flex; justify-content: center; align-items: center; width: 100%">
+    <img src="result.png" alt="Imagen de salida">
+</div>
+++++
+
+[[technologies]]
+== 👨🏻‍💻 Technologies
+image:https://badges.aleen42.com/src/github.svg[]
+image:https://colab.research.google.com/assets/colab-badge.svg[]
+image:https://badges.aleen42.com/src/visual_studio_code.svg[]
+image:https://badges.aleen42.com/src/python.svg[]
+image:https://img.shields.io/badge/PyTorch-EE4C2C?style=flat-square&logo=pytorch&logoColor=white[]
+image:https://badges.aleen42.com/src/docker.svg[]
+
+* Python 3.9
+* Pytorch
+* Docker
+* GroundingDINO
+* OpenCV
+* EasyOCR
+
+[[projectstructure]]
+== 🗂️ Project Structure
+[listing, tree]
+
+credit-card-project/
+│
+├── data/
+│   ├── input_data/
+│   ├── output_data/
+│   ├── patterns/
+├── src/
+│   ├── api/
+│   ├── config/
+│   ├── core/
+│   ├── demo/
+│   ├── models/
+│   └── utils/
+├── weights/
+├── .env
+├── .gitignore
+├── docker-compose.yml
+├── Dockerfile
+├── Pipfile
+├── Pipfile.lock
+├── README.md
+├── requirements.txt
+└── setup.py
+
+[[gettingstarted]]
+== 🛠️ Getting Started
+
+[[requirements]]
+=== 💻 System Requirements
+
+* Python 3.9.6 or higher
+* Docker 20.10.21 or higher
+* 8GB RAM minimun, 16GB recommended
+
+You can set up the development environment for this project in two ways: using `Docker` or using a Python Virtual Environment with `pipenv` for example.
+
+To execute this app need to declarate an environment variable to consume an extern service in a file called `.env` in the project root directory
+[source,bash]
+BINLIST_API_URL=https://lookup.binlist.net
+
+[[docker]]
+=== 🐳 Using Docker
+1. Ensure you have `Docker` and `docker-compose` installed on your system
+2. Clone the repository
+[source,bash]
+git clone https://github.com/nahueltabasso/credit.git
+
+3. Build the docker image
+[source,bash]
+docker-compose build
+
+4. After built the docker image, run the container with the next command
+[source,bash]
+docker-compose up -d
+
+**This will create and run a container with all necessary dependencies installed**
+
+[[virtualenv]]
+=== 🐍 Using Python Virtual Environment (pipenv)
+1. Ensure you have Python and pipenv installed on your system. If you not have pipenv installed execute the next command
+[source, bash]
+pip install pipenv
+
+2. Clone the repository
+[source,bash]
+git clone https://github.com/nahueltabasso/credit.git
+
+3. Create a virtual environment and active it
+[source,bash]
+pipenv --python 3.9.6
+pipenv shell
+
+4. Download the requires libraries from requirements.txt
+[source,bash]
+pip install -r requirements.txt
+
+5. Install GroundingDINO
+[source,bash]
+pipenv run pip install git+https://github.com/IDEA-Research/GroundingDINO.git@df5b48a3efbaa64288d8d0ad09b748ac86f22671
+
+6. Run Gradio UI to test this application
+[source,bash]
+python src/demo/gradio_ui.py
+
+[horizontal]
+++++
+<div style="display: flex; justify-content: center; align-items: center; width: 100%">
+    <img src="example_gradio_ui.png" alt="Imagen de salida">
+</div>
+++++
+
+[[api]]
+=== 🌐 Rest API Service
+If you prefer you can try this service through this API, enter to this url in your browser `localhost:8000/docs`. This url will open a Swagger, that is provides by FastAPI, and can test the endpoint to detect credit cards and extract data from it.
+
+[[apitutorial]]
+==== 🐍 Using the Python API
+Here's a quick example of how to use this service in your code
+
+**Detect a credit card and Payment Network**
+[source,python]
+    # Load your image
+    img_path = "path/to/your/image.jpg"
+    img_np = cv2.imread(filename=img_path)
+    # Detect the credit card and payment network
+    credit_card, payment_network = credit_card_detector(img=img_np)
+
+**Extract data from an image**
+[source, python]
+    response = CreditCardData()
+    if credit_card is not None and payment_network is not None:
+        response.payment_network = payment_network
+        ocrService.set_img(img=credit_card)
+        ocrService.set_zones_coords(zones=get_zones_coords(payment_network))
+        response = ocrService.extract(entity=response)
+        response.obs = "Succesfull process!"
+    else:
+        response.obs = "Can not detected a credit card."
+
+    print(f"PAYMENT NETWORK --- {response.type}")
+    print(f"CARD NUMBER --- {response.card_number}")
+    print(f"NAME --- {response.name}")
+    print(f"EXPIRATION DATE --- {response.expiration_date}")
+
+To use the REST API, send a POST request to `/api/service/credit-card` endpoint with the image file:
+[source,bash]
+curl -X POST "http://localhost:8000/api/service/credit-card" 
+-H "accept: application/json" 
+-H "Content-Type: multipart/form-data" 
+-F "file=@path/to/your/image.jpg"
+
+[[contributing]]
+== 🤝 Contributing
+Contributions are welcome to the `Credit Card Detector & Data Extractor` project. Here's how you can contribute:
+
+1. Fork the repository
+2. Create a new branch (`git checkout -b feature/feature`)
+3. Make your changes
+4. Commit your changes (`git commit -m "feat: add some feature"`)
+5. Push to the branch (`git push origin feature/feature`)
+6. Open a Pull Request
+
+[[acknowledgements]]
+== 🙏🏻 Acknowledgements
+This project wouldn't be possible without the following open-source projects:
+
+* link:https://github.com/IDEA-Research/GroundingDINO[GroundingDINO]
+* link:https://github.com/JaidedAI/EasyOCR[EasyOCR]
+* link:https://github.com/gradio-app/gradio[Gradio]
+* link:https://binlist.net/[BINLIST]
+
+[[license]]
+== 📄 License
+This project was under https://opensource.org/license/mit/[MIT LICENSE] license.
+
+[[contact]]
+== 🙎🏻 Contact
+If you have some question about this you can contact me to my email nahueltabasso@gmail.com or my link:https://www.instagram.com/nahuel.tabasso/[Instagram]
+
