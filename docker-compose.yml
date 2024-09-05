@@ -5,10 +5,10 @@ services:
       context: ./
       dockerfile: Dockerfile
     ports:
-      - "7860:7860"
+      - "7861:7860"
     volumes:
       - ./:/opt/project/credit-card-service
-    # runtime: nvidia
+    runtime: nvidia
 
   api_credit_card_service:
     build:
@@ -19,4 +19,4 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - ./:/opt/project/credit-card-service
-    # runtime: nvidia
+    runtime: nvidia
