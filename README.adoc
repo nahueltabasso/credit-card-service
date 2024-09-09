@@ -1,5 +1,11 @@
 = 💳 Credit Card Detector & Data Extrator
 
+[horizontal]
+++++
+<div style="display: flex; justify-content: center; align-items: center; width: 100%">
+    <img src="./src/demo/assets/process_schema.png" alt="Imagen de salida">
+</div>
+++++
 
 == 📋 INDEX
 . <<description,Description>>
@@ -20,21 +26,23 @@
 . <<contact,Contact>>
 
 
-
 [[description]]
 == 📘 Description
-This project called `Credit Card Detector & Data Extractor` is a service designed to detect **credits cards** in images through GroundingDINO, which is an advanced **Artificial Intelligence** technique that combines the object detections with natural language comprenhsion, and data extraction by OCR technique to identify card numbers, expiration dates and cardholder names.
+This project called `Credit Card Detector & Data Extractor` is a service designed to detect **credit/debit cards** in images through YOLOv10, which is an advanced **Artificial Intelligence** technique. It also extracts data from the cards using OCR to identify card numbers, expiration dates, and cardholder names. Finally it uses a YOLOv8 classifier to classify the payment network
+
 
 [[features]]
 === ☑️ Features:
-* Credit card detection in images
+* Credit/Debit card detection in images
 * Extraction of card number, expiration date and cardholder name
-* Support for multiple credit card types
+* Support for multiple payment networks
 
 [[notes]]
 === 📝 Notes:
 This projects was developed with personal and academics goals, not for commercial purposes.
 However, it is important to mention that the credit card images with I worked in this project for notebooks and demos were downloaded from Internet. So this credit cards do not belon to anybody and aren't real cards, therefore I am not using or sharing sensitive information of any person.
+
+If you want to know how were the processes of fine-tunned of YOLO models, visit this repository link:https://github.com/nahueltabasso/yolo-fine-tunning/tree/main/docs[YOLO_FINE_TUNNING].
 
 [[example]]
 === ✅ Example
@@ -60,24 +68,27 @@ image:https://badges.aleen42.com/src/docker.svg[]
 * GroundingDINO
 * OpenCV
 * EasyOCR
+* Ultralytics
 
 [[projectstructure]]
 == 🗂️ Project Structure
 [listing, tree]
 
 credit-card-project/
-│
 ├── data/
 │   ├── input_data/
 │   ├── output_data/
 │   ├── patterns/
 ├── src/
 │   ├── api/
+│   │   ├── v1/
+│   │   ├── v2/
 │   ├── config/
 │   ├── core/
 │   ├── demo/
 │   ├── models/
 │   └── utils/
+│       
 ├── weights/
 ├── .env
 ├── .gitignore
@@ -85,7 +96,7 @@ credit-card-project/
 ├── Dockerfile
 ├── Pipfile
 ├── Pipfile.lock
-├── README.md
+├── README.adoc
 ├── requirements.txt
 └── setup.py
 
@@ -110,6 +121,10 @@ Also you need to create a weights directory and download the GroundingDINO Model
 mkdir weights
 cd weights
 wget -q https://github.com/IDEA-Research/GroundingDINO/releases/download/v0.1.0-alpha/groundingdino_swint_ogc.pth
+wget -q https://drive.google.com/uc?id=1VxjmZVxBHcAtYlmpLu_SyohWW5UFVhEx -O YOLOv10n_CardDetector.pth
+wget -q https://drive.google.com/uc?id=19lm1P0hwwR5NBo5nrE7VVJ-3bTeLHjXR -O YOLOv10n_CardElementsDetector.pth
+wget -q https://drive.google.com/uc?id=1xX7Qr3VzAqrkrj90DIvZNCyKC7q-Z56t -O YOLOv8n_PaymentNetworkClassifier.pth
+
 
 [[docker]]
 === 🐳 Using Docker
@@ -175,29 +190,38 @@ Here's a quick example of how to use this service in your code
     # Load your image
     img_path = "path/to/your/image.jpg"
     img_np = cv2.imread(filename=img_path)
-    # Detect the credit card and payment network
-    credit_card, payment_network = credit_card_detector(img=img_np)
+    # Detect a card in the image
+    card = card_service.get_card_bbox(input_img=img_np)
 
 **Extract data from an image**
 [source, python]
     response = CreditCardData()
-    if credit_card is not None and payment_network is not None:
+    if card is not None:
+        # Detect the card elements
+        card_elements = card_service.get_card_elements(card=card)
+        # Classify the payment network
+        payment_network = card_service.classify_payment_network(
+            element=card_elements['payment_network'],
+            card=card
+        )
         response.payment_network = payment_network
-        ocrService.set_img(img=credit_card)
-        ocrService.set_zones_coords(zones=get_zones_coords(payment_network))
+        ocrService.set_img(img=card)
+        ocrService.set_images(elements=card_elements)
+        ocrService.set_zones_coords(zones=config.COMMON_CARD_ZONES)
         response = ocrService.extract(entity=response)
         response.obs = "Succesfull process!"
     else:
-        response.obs = "Can not detected a credit card."
+        response.obs = "Invalid image"
+
 
     print(f"PAYMENT NETWORK --- {response.type}")
     print(f"CARD NUMBER --- {response.card_number}")
     print(f"NAME --- {response.name}")
     print(f"EXPIRATION DATE --- {response.expiration_date}")
 
-To use the REST API, send a POST request to `/api/service/credit-card` endpoint with the image file:
+To use the REST API, send a POST request to `/api/v2/service/credit-card` endpoint with the image file:
 [source,bash]
-curl -X POST "http://localhost:8000/api/service/credit-card" 
+curl -X POST "http://localhost:8000/api/v2/service/credit-card" 
 -H "accept: application/json" 
 -H "Content-Type: multipart/form-data" 
 -F "file=@path/to/your/image.jpg"
@@ -221,6 +245,7 @@ This project wouldn't be possible without the following open-source projects:
 * link:https://github.com/JaidedAI/EasyOCR[EasyOCR]
 * link:https://github.com/gradio-app/gradio[Gradio]
 * link:https://binlist.net/[BINLIST]
+* link:https://docs.ultralytics.com/es/models/yolov10/[Ultralytics]
 
 [[license]]
 == 📄 License
