@@ -5,8 +5,8 @@ from datetime import datetime
 class CreditCardData:
     payment_network: str = None
     card_number: str = None
-    name: str = None
-    expiration_date: datetime = None
+    cardholder: str = None
+    expiry_date: datetime = None
     create_at: datetime = None
     obs: str = None
     
