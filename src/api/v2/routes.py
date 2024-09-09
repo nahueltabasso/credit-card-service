@@ -20,10 +20,8 @@ async def get_data(file: UploadFile = File(...)):
     image = validate_image(file=file)
     # Convert file to numpy array
     img_np = image_to_numpy(image=image)
-    print(f"IMAGE SHAPE - {img_np.shape}")
     # Detect a card in the image
     card = card_service.get_card_bbox(input_img=img_np)
-    print("LLEGA")
     response = CreditCardData()
     if card is not None:
         # Detect the card elements
