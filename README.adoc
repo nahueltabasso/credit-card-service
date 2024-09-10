@@ -1,4 +1,4 @@
-= 💳 Credit Card Detector & Data Extrator
+= 💳 Credit Card Detector & Data Extrator V1.0.0
 
 
 == 📋 INDEX
