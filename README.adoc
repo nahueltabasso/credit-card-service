@@ -2,6 +2,7 @@
 
 
 == 📋 INDEX
+. <<versions,Available Versions>>
 . <<description,Description>>
 .. <<features,Features>>
 .. <<notes,Notes>>
@@ -19,7 +20,13 @@
 . <<license,License>>
 . <<contact,Contact>>
 
+[[versions]]
+== 📌 Available Versions
 
+This project provides multiple versions of the API. You can find the documentation for each version at the links below:
+
+* **Version 1:** link:https://github.com/nahueltabasso/credit-card-service/blob/release-v1.0.0/README.adoc[V1.0.0]
+* **Version 2:** link:https://github.com/nahueltabasso/credit-card-service/blob/release-v2.0.0/README.adoc[V2.0.0]
 
 [[description]]
 == 📘 Description
