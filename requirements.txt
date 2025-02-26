@@ -6,7 +6,7 @@ easyocr==1.7.1
 fastapi[all]==0.111.0
 gradio==3.43.2
 ultralytics==8.2.78
-
+python-dotenv
 
 
 
