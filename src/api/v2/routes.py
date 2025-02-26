@@ -20,6 +20,7 @@ async def get_data(file: UploadFile = File(...)):
     image = validate_image(file=file)
     # Convert file to numpy array
     img_np = image_to_numpy(image=image)
+
     # Detect a card in the image
     card = card_service.get_card_bbox(input_img=img_np)
     response = CreditCardData()
@@ -37,6 +38,13 @@ async def get_data(file: UploadFile = File(...)):
         ocrService.set_zones_coords(zones=config.COMMON_CARD_ZONES)
         response = ocrService.extract(entity=response)
         response.obs = "Succesfull process!"
+        
+        print(f"Payment Network - {response.payment_network}")
+        print(f"Card Number - {response.card_number}")
+        print(f"Cardholder - {response.cardholder}")
+        print(f"Expiry Date - {response.expiry_date}")
+        print(f"Create At - {response.create_at}")
+        print(f"Observation - {response.obs}")
     else:
         response.obs = "Invalid image"
     return response

@@ -5,7 +5,7 @@ from src.config.config import Config
 import numpy as np
 import os
 import torchvision as tv
-
+import cv2
 
 class CardService:
     
@@ -58,6 +58,9 @@ class CardService:
                 - clss (list): List of class labels corresponding to the selected bounding boxes.
             
         """
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        cv2.imwrite("imagen.jpg", img)
+        
         result = detector(source=img)
 
         xyxy = result[0].boxes.xyxy.cpu()
