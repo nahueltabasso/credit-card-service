@@ -12,3 +12,9 @@ credit_card_extractor.egg-info/
 
 .env
 weights/
+
+
+src/api/__pycache__/
+src/api/imagen.jpg
+src/api/v1/__pycache__/
+src/api/v2/__pycache__/
