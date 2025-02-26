@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from src.core.ocr_service import get_ocr_service
 from src.core.card_service import get_card_service
 from src.config.config import Config
@@ -7,6 +8,15 @@ from src.api.v2.routes import router as v2_router
 import uvicorn
 
 app = FastAPI()
+
+# CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"], 
+    allow_credentials=True,
+    allow_methods=["*"],  
+    allow_headers=["*"], 
+)
 
 # Register versioned routes
 app.include_router(v1_router, prefix="/api/v1/service/credit-card", tags=["v1"])
